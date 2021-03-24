@@ -70,6 +70,8 @@ struct ContentView: View {
                         Button(action: {
                             // TOGGLE APPEARANCE
                             isDarkMode.toggle()
+                            playSound(sound: "sound-tap", type: "mp3")
+                            feedback.notificationOccurred(.success)
                         }, label: {
                             Image(systemName: isDarkMode ? "moon.circle.fill" : "moon.circle")
                                 .resizable()
@@ -84,6 +86,8 @@ struct ContentView: View {
                 // MARK: - NEW TASK BUTTON
                     Button(action: {
                         showNewTaskItem = true
+                        playSound(sound: "sound-ding", type: "mp3")
+                        feedback.notificationOccurred(.success)
                     }, label: {
                        Image(systemName: "plus.circle")
                         .font(.system(size: 30, weight: .semibold, design: .rounded))
@@ -111,11 +115,16 @@ struct ContentView: View {
                     .padding(.vertical, 0)
                     .frame(maxWidth: 640)
                 } //: VSTACK
+                .blur(radius: showNewTaskItem ? 8.0 : 0, opaque: false)
+                .transition(.move(edge: .bottom))
+                .animation(.easeOut(duration: 0.5))
                 
                 // MARK: - NEW TASK ITEM
                 
                 if showNewTaskItem {
-                    BlankView()
+                    BlankView(
+                        backgroundColor: isDarkMode ? Color.black : Color.gray,
+                        backGroundOpacity: isDarkMode ? 0.3 : 0.5)
                         .onTapGesture {
                             withAnimation() {
                                 showNewTaskItem = false
@@ -131,6 +140,7 @@ struct ContentView: View {
             .navigationBarHidden(true)
             .background(
             BackgroundImageView()
+                .blur(radius: showNewTaskItem ? 8 : 0, opaque: false)
             )
             .background(
                 backgroundGradient.ignoresSafeArea(.all)
